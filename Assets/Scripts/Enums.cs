@@ -23,3 +23,13 @@ public enum EResources : byte
     Cobble,     // Булыжник
     Rock,       // Камень
 }
+
+public enum ETypeInteractiveObj : byte
+{
+    
+}
+
+public enum EStatusInteractiveObj : byte
+{
+    
+}

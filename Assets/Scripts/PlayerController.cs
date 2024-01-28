@@ -1,6 +1,5 @@
-using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
+using TMPro;
 using UnityEngine;
 
 public class Inventory
@@ -17,10 +16,14 @@ public class PlayerController : MonoBehaviour
     
     [SerializeField] private Animator anim;
 
+    [SerializeField] private TMP_Text inventoryText;
+
     private Vector2 moveVector;
 
     private EPlayerStatus playerStatus = EPlayerStatus.Idle;
-    private EDirection lastDirection = EDirection.Down;
+    private Vector2 lastDirection = Vector2.down;
+
+    private Inventory inventory;
 
     void Update()
     {
@@ -52,14 +55,11 @@ public class PlayerController : MonoBehaviour
         {
             if (playerStatus == EPlayerStatus.Moves) { playerStatus = EPlayerStatus.Idle; }
 
-            switch (lastDirection)
-            {
-                case EDirection.Up: anim.Play("idleUp"); break;
-                case EDirection.Right: anim.Play("idleRight"); break;
-                case EDirection.Down: anim.Play("idleDown"); break;
-                case EDirection.Left: anim.Play("idleLeft"); break;
-                default: anim.Play("idleDown"); break;
-            }
+            if (lastDirection == Vector2.up) { anim.Play("idleUp"); }
+            else if (lastDirection == Vector2.right) { anim.Play("idleRight"); }
+            else if (lastDirection == Vector2.down) { anim.Play("idleDown"); }
+            else if (lastDirection == Vector2.left) { anim.Play("idleLeft"); }
+            else { anim.Play("idleDown"); }
         }
         else
         {
@@ -69,18 +69,18 @@ public class PlayerController : MonoBehaviour
             {
                 if (direction.y > 0)
                 {
-                    if (lastDirection != EDirection.Up || playerStatus != EPlayerStatus.Moves)
+                    if (lastDirection != Vector2.up || playerStatus != EPlayerStatus.Moves)
                     {
                         anim.Play("moveUp");
-                        lastDirection = EDirection.Up;
+                        lastDirection = Vector2.up;
                     }
                 }
                 else
                 {
-                    if (lastDirection != EDirection.Down || playerStatus != EPlayerStatus.Moves)
+                    if (lastDirection != Vector2.down || playerStatus != EPlayerStatus.Moves)
                     {
                         anim.Play("moveDown");
-                        lastDirection = EDirection.Down;
+                        lastDirection = Vector2.down;
                     }
                 }
             }
@@ -88,18 +88,18 @@ public class PlayerController : MonoBehaviour
             {
                 if (direction.x > 0)
                 {
-                    if (lastDirection != EDirection.Right || playerStatus != EPlayerStatus.Moves)
+                    if (lastDirection != Vector2.right || playerStatus != EPlayerStatus.Moves)
                     {
                         anim.Play("moveRight");
-                        lastDirection = EDirection.Right;
+                        lastDirection = Vector2.right;
                     }
                 }
                 else
                 {
-                    if (lastDirection != EDirection.Left || playerStatus != EPlayerStatus.Moves)
+                    if (lastDirection != Vector2.left || playerStatus != EPlayerStatus.Moves)
                     {
                         anim.Play("moveLeft");
-                        lastDirection = EDirection.Left;
+                        lastDirection = Vector2.left;
                     }
                 }
             }
@@ -117,20 +117,9 @@ public class PlayerController : MonoBehaviour
     {
         if (collider.tag == "GameController" && playerStatus == EPlayerStatus.Idle)
         {
-            Vector2 playerDir;
-            switch (lastDirection)
-            {
-                case EDirection.Up: playerDir = Vector2.up; break;
-                case EDirection.Right: playerDir = Vector2.right; break;
-                case EDirection.Down: playerDir = Vector2.down; break;
-                case EDirection.Left: playerDir = Vector2.left; break;
-                case EDirection.None: playerDir = Vector2.zero; break;
-                default: playerDir = Vector2.zero; break;
-            }
-
             Vector2 objectDir = (collider.transform.position - transform.position).normalized;
 
-            if (Vector2.Dot(playerDir, objectDir) > 0.5f)
+            if (Vector2.Dot(lastDirection, objectDir) > 0.5f)
             {
                 playerStatus = EPlayerStatus.Mines;
                 
