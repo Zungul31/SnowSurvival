@@ -1,12 +1,7 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-
-public class Inventory
-{
-    public int maxCapacity;
-    public Dictionary<EResources, int> resources;
-}
 
 public class PlayerController : MonoBehaviour
 {
@@ -16,14 +11,14 @@ public class PlayerController : MonoBehaviour
     
     [SerializeField] private Animator anim;
 
-    [SerializeField] private TMP_Text inventoryText;
-
     private Vector2 moveVector;
 
     private EPlayerStatus playerStatus = EPlayerStatus.Idle;
     private Vector2 lastDirection = Vector2.down;
 
-    private Inventory inventory;
+    private BasicInteractiveObj currentInteractiveObj;
+    
+    private Inventory inventory = new Inventory(3);
 
     void Update()
     {
@@ -105,31 +100,37 @@ public class PlayerController : MonoBehaviour
             }
 
             playerStatus = EPlayerStatus.Moves;
+            currentInteractiveObj?.Disconnected();
+            currentInteractiveObj = null;
         }
     }
-
-    // private void OnTriggerEnter2D(Collider2D collider)
-    // {
-    //     Debug.Log("TriggerEnter: " + collider.name);
-    // }
     
     private void OnTriggerStay2D(Collider2D collider)
     {
-        if (collider.tag == "GameController" && playerStatus == EPlayerStatus.Idle)
+        if (collider.tag == "GameController"
+            && playerStatus == EPlayerStatus.Idle
+            && CheckDirectionToObject(collider.transform.position))
         {
-            Vector2 objectDir = (collider.transform.position - transform.position).normalized;
+            playerStatus = EPlayerStatus.Mines;
+            currentInteractiveObj = collider.gameObject.GetComponent<BasicInteractiveObj>();
+            currentInteractiveObj.Connected();
+            return;
+        }
 
-            if (Vector2.Dot(lastDirection, objectDir) > 0.5f)
+        if (collider.tag == "ItemObject" && CheckDirectionToObject(collider.transform.position))
+        {
+            ItemObject item = collider.gameObject.GetComponent<ItemObject>();
+            if (inventory.TryPutItem(item.GetItemType()))
             {
-                playerStatus = EPlayerStatus.Mines;
-                
-                Debug.Log("Object: " + collider.name);
+                item.HideItem();
             }
+            return;
         }
     }
-
-    // private void OnTriggerExit2D(Collider2D collider)
-    // {
-    //     Debug.Log("TriggerExit: " + collider.name);
-    // }
+    
+    private bool CheckDirectionToObject(Vector3 objectPosition)
+    {
+        Vector2 objectDir = (objectPosition - transform.position).normalized;
+        return Vector2.Dot(lastDirection, objectDir) > 0.5f;
+    }
 }

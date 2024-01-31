@@ -1,19 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public interface IGetInteractiveObj
-{
-    BasicInteractiveObj GetInteractiveObj();
-}
 
-public class BasicInteractiveObj : MonoBehaviour, IGetInteractiveObj
+public abstract class BasicInteractiveObj : MonoBehaviour
 {
     public ETypeInteractiveObj type;
-    public EStatusInteractiveObj status;
+
+    public EItemType takenItemType;
+    public EItemType givenItemType;
+
+    protected bool isConectd;
+
+    public virtual void Connected() { }
+
+    public virtual void Disconnected() { }
     
-    public BasicInteractiveObj GetInteractiveObj()
-    {
-        return this;
-    }
 }

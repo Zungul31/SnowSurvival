@@ -1,12 +1,10 @@
 ﻿using System;
 
-public enum EDirection : byte
+public enum EManagerStatus : byte
 {
-    None,
-    Up,
-    Right,
-    Down,
-    Left
+    Shutdown,
+    Initializing,
+    Started,
 }
 
 public enum EPlayerStatus : byte
@@ -16,8 +14,10 @@ public enum EPlayerStatus : byte
     Mines
 }
 
-public enum EResources : byte
+public enum EItemType
 {
+    None = -2,
+    All,
     Wood,       // Древесина
     Plank,      // Доска
     Cobble,     // Булыжник
@@ -26,7 +26,9 @@ public enum EResources : byte
 
 public enum ETypeInteractiveObj : byte
 {
-    
+    Spawner,
+    Getter,
+    Giver,
 }
 
 public enum EStatusInteractiveObj : byte
