@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour
 
     private BasicInteractiveObj currentInteractiveObj;
     
-    private Inventory inventory = new Inventory(3);
+    [SerializeField] private Inventory inventory = new Inventory();
 
     void Update()
     {
@@ -113,14 +113,21 @@ public class PlayerController : MonoBehaviour
         {
             playerStatus = EPlayerStatus.Mines;
             currentInteractiveObj = collider.gameObject.GetComponent<BasicInteractiveObj>();
-            currentInteractiveObj.Connected();
+            if (currentInteractiveObj.type == ETypeInteractiveObj.Spawner)
+            {
+                currentInteractiveObj.Connected();
+            }
+            else
+            {
+                currentInteractiveObj.Connected(inventory);
+            }
             return;
         }
 
         if (collider.tag == "ItemObject" && CheckDirectionToObject(collider.transform.position))
         {
             ItemObject item = collider.gameObject.GetComponent<ItemObject>();
-            if (inventory.TryPutItem(item.GetItemType()))
+            if (inventory.TryGivItem(item.GetItemType()))
             {
                 item.HideItem();
             }

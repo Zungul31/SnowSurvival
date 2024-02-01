@@ -40,15 +40,17 @@ public class Spawner : BasicInteractiveObj
         while (isConectd && isAlive)
         {
             await UniTask.WaitForSeconds(spawnTime);
-            controller.SetItem(this.transform.position, givenItemType);
+            if (!isConectd || !isAlive) { break; }
+            
+            controller.SetItem(transform.position, givenItemType);
             currentHealth--;
             isAlive = currentHealth > 0;
         }
 
         if (!isAlive)
         {
-            StartRecovery().Forget();
             sprite.sprite = deadSprite;
+            StartRecovery().Forget();
         }
     }
 

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using UnityEditor.SceneTemplate;
 using UnityEngine;
 
 public class SpawnerController : MonoBehaviour
@@ -10,7 +9,6 @@ public class SpawnerController : MonoBehaviour
     public void SetItem(Vector3 startPos, EItemType type)
     {
         var newPos = startPos + Quaternion.Euler(0f, 0f, Random.Range(0f, 360f)) * Vector2.up;
-        //Debug.Log("NewPos: " + newPos);
 
         ItemObject freeItem = null;
         foreach (var item in items)

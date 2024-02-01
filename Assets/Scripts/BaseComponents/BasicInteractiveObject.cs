@@ -12,6 +12,9 @@ public abstract class BasicInteractiveObj : MonoBehaviour
 
     public virtual void Connected() { }
 
+    public virtual void Connected(Inventory inventory) { }
+    
     public virtual void Disconnected() { }
+    
     
 }

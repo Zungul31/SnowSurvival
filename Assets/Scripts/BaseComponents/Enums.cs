@@ -27,7 +27,7 @@ public enum EItemType
 public enum ETypeInteractiveObj : byte
 {
     Spawner,
-    Getter,
+    Taker,
     Giver,
 }
 
