@@ -22,6 +22,8 @@ public enum EItemType
     Plank,      // Доска
     Cobble,     // Булыжник
     Rock,       // Камень
+    
+    Gold,       // Золото
 }
 
 public enum ETypeInteractiveObj : byte
@@ -29,9 +31,13 @@ public enum ETypeInteractiveObj : byte
     Spawner,
     Taker,
     Giver,
+    Store,
 }
 
-public enum EStatusInteractiveObj : byte
+public enum ETypeTool : byte
 {
-    
+    None,
+    Axe,        // Топор
+    Shovel,     // Лопата
+    Pickaxe,    // Кирка
 }

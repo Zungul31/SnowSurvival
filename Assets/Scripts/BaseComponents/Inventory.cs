@@ -8,6 +8,9 @@ public class Inventory
 {
     public int maxCapacity;
     [SerializeField] private TMP_Text captionText;
+    [SerializeField] private TMP_Text currencyText;
+
+    private int goldCount;
     private Dictionary<EItemType, int> content;
 
     public Inventory()
@@ -15,33 +18,41 @@ public class Inventory
         content = new Dictionary<EItemType, int>();
     }
 
-    public bool TryGivItem(EItemType type)
+    public bool TryGivItem(EItemType type, int count = 1)
     {
         if (type is EItemType.All or EItemType.None) { return false; }
-        
-        var sum = 0;
-        foreach (var items in content)
-        {
-            sum += items.Value;
-        }
 
-        if (sum < maxCapacity)
+        if (type != EItemType.Gold)
         {
-            if (content.ContainsKey(type)) { content[type]++; }
-            else { content.Add(type, 1); }
+            var sum = 0;
+            foreach (var items in content)
+            {
+                sum += items.Value;
+            }
 
-            ShowCaption();
-            return true;
+            if (sum < maxCapacity)
+            {
+                if (content.ContainsKey(type)) { content[type]++; }
+                else { content.Add(type, 1); }
+                ShowCaption();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
         else
         {
-            return false;
+            goldCount += count;
+            ShowCurrency();
+            return true;
         }
     }
 
     public EItemType TryTakeItem(EItemType type)
     {
-        if (type != EItemType.All && type != EItemType.None)
+        if (type != EItemType.All && type != EItemType.None && type != EItemType.Gold)
         {
             if (content.ContainsKey(type))
             {
@@ -66,6 +77,13 @@ public class Inventory
             var keys = new List<EItemType>(content.Keys);
             return TryTakeItem(keys[^1]);
         }
+
+        if (type == EItemType.Gold && goldCount != 0)
+        {
+            goldCount--;
+            ShowCurrency();
+            return type;
+        }
         return EItemType.None;
     }
 
@@ -87,15 +105,8 @@ public class Inventory
         }
     }
 
-    private void DebugInventory()
+    private void ShowCurrency()
     {
-        var str = "";
-
-        foreach (var items in content)
-        {
-            str = str + items.Key + ": " + items.Value + "; ";
-        }
-
-        Debug.Log("Inventory content: " + str);
+        currencyText.text = $"<sprite name=\"Gold\">X{goldCount}";
     }
 }
